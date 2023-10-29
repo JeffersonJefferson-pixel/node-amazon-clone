@@ -27,4 +27,29 @@ productRouter.get("/api/products/search/:name", auth, async (req, res) => {
   }
 });
 
+productRouter.post("/api/products/rate-product", auth, async (req, res) => {
+  try {
+    const { id, rating } = req.body;
+    let product = await Product.findById(id);
+    const index = product.ratings.findIndex(
+      (rating) => rating.userId === req.user
+    );
+    if (index !== -1) {
+      product.ratings.splice(index, 1);
+    }
+
+    const ratingSchema = {
+      userId: req.user,
+      rating: rating
+    }
+
+    product.ratings.push(ratingSchema);
+
+    product = await product.save();
+    res.json(product);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = productRouter;
