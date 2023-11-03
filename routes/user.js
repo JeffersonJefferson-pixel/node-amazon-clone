@@ -14,7 +14,7 @@ userRouter.post("/api/add-to-cart", authRouter, async (req, res) => {
       user.cart.push({ product, quantity: 1 });
     } else {
 
-      let foundProduct = user.cart.find((product) => product.product._id.equals(product._id));
+      let foundProduct = user.cart.find(({product: cartProduct}) => cartProduct._id.equals(product._id));
       if (foundProduct != undefined) {
         foundProduct.quantity += 1;
       } else {
